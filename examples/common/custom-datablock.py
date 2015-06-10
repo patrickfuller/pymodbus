@@ -45,7 +45,7 @@ class CustomDataBlock(ModbusSparseDataBlock):
         # however make sure not to do too much work here or it will
         # block the server, espectially if the server is being written
         # to very quickly
-        print "wrote {} to {}".format(value, address)
+        print("wrote {} to {}".format(value, address))
 
 
 #---------------------------------------------------------------------------# 

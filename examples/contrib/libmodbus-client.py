@@ -422,6 +422,6 @@ if __name__ == '__main__':
     # operate with our high level client
     with LibmodbusClient(protocol) as client:
         registers = client.write_registers(0, [13, 12, 11])
-        print registers
+        print(registers)
         registers = client.read_holding_registers(0, 10)
-        print registers.registers
+        print(registers.registers)

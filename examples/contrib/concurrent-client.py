@@ -62,7 +62,7 @@ class _Primitives(object):
         :returns: An initialized instance of concurrency primitives
         '''
         if in_process:
-            from Queue import Queue
+            from queue import Queue
             from threading import Thread
             from threading import Event
             return klass(queue=Queue, event=Event, worker=Thread)
@@ -110,10 +110,10 @@ def _client_worker_process(factory, input_queue, output_queue, is_shutdown):
                 log.debug("executing request on thread: %s", workitem)
                 result = client.execute(workitem.request)
                 output_queue.put(WorkResponse(False, workitem.work_id, result))
-            except Exception, exception:
+            except Exception as exception:
                 log.exception("error in worker thread: %s", threading.current_thread())
                 output_queue.put(WorkResponse(True, workitem.work_id, exception))
-        except Exception, ex: pass
+        except Exception as ex: pass
     log.info("request worker shutting down: %s", threading.current_thread())
 
 
@@ -142,7 +142,7 @@ def _manager_worker_process(output_queue, futures, is_shutdown):
             else: future.set_result(workitem.response)
             log.debug("updated future result: %s", future)
             del futures[workitem.work_id]
-        except Exception, ex: log.exception("error in manager")
+        except Exception as ex: log.exception("error in manager")
     log.info("manager worker shutting down: %s", threading.current_thread())
 
 
@@ -201,7 +201,7 @@ class ConcurrentClient(ModbusClientMixin):
         :param request: The request to execute
         :returns: A future linked to the call's response
         '''
-        future, work_id = Future(), self.counter.next()
+        future, work_id = Future(), next(self.counter)
         self.input_queue.put(WorkRequest(request, work_id))
         self.futures[work_id] = future
         return future

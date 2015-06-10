@@ -43,8 +43,8 @@ class ContextRunner(object):
         for fx in self.__reg_functions:
             self.context.setValues(fx, address, values)
             result = self.context.getValues(fx, address, len(values))
-            self.assertEquals(len(result), len(values))
-            self.assertEquals(result, values)
+            self.assertEqual(len(result), len(values))
+            self.assertEqual(result, values)
 
     def testDataContextDiscretes(self):
         ''' Test that the context gets and sets discretes '''
@@ -53,6 +53,6 @@ class ContextRunner(object):
         for fx in self.__bit_functions:
             self.context.setValues(fx, address, values)
             result = self.context.getValues(fx, address, len(values))
-            self.assertEquals(len(result), len(values))
-            self.assertEquals(result, values)
+            self.assertEqual(len(result), len(values))
+            self.assertEqual(result, values)
 

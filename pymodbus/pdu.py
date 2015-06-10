@@ -10,6 +10,7 @@ from pymodbus.utilities import rtuFrameSize
 # Logging
 #---------------------------------------------------------------------------#
 import logging
+import collections
 _logger = logging.getLogger(__name__)
 
 
@@ -152,8 +153,8 @@ class ModbusExceptions(Singleton):
         
         :param code: The code number to translate
         '''
-        values = dict((v, k) for k, v in cls.__dict__.iteritems()
-            if not k.startswith('__') and not callable(v))
+        values = dict((v, k) for k, v in cls.__dict__.items()
+            if not k.startswith('__') and not isinstance(v, collections.Callable))
         return values.get(code, None)
 
 

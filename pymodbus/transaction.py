@@ -73,7 +73,7 @@ class ModbusTransactionManager(object):
                     _logger.debug("recv: " + " ".join([hex(ord(x)) for x in result]))
                 self.client.framer.processIncomingPacket(result, self.addTransaction)
                 break;
-            except socket.error, msg:
+            except socket.error as msg:
                 self.client.close()
                 _logger.debug("Transaction failed. (%s) " % msg)
                 retries -= 1
@@ -141,7 +141,7 @@ class DictTransactionManager(ModbusTransactionManager):
 
         :returns: An iterator of the managed transactions
         '''
-        return iter(self.transactions.keys())
+        return iter(list(self.transactions.keys()))
 
     def addTransaction(self, request, tid=None):
         ''' Adds a transaction to the handler

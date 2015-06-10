@@ -129,7 +129,7 @@ class ReadDeviceInformationResponse(ModbusResponse):
             self.read_code, self.conformity, self.more_follows,
             self.next_object_id, self.number_of_objects)
 
-        for (object_id, data) in self.information.iteritems():
+        for (object_id, data) in self.information.items():
             packet += struct.pack('>BB', object_id, len(data))
             packet += data
 

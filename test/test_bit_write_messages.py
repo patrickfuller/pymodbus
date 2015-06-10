@@ -13,7 +13,7 @@ from pymodbus.bit_write_message import *
 from pymodbus.exceptions import *
 from pymodbus.pdu import ModbusExceptions
 
-from modbus_mocks import MockContext, FakeList
+from .modbus_mocks import MockContext, FakeList
 
 #---------------------------------------------------------------------------#
 # Fixture
@@ -42,7 +42,7 @@ class ModbusBitMessageTests(unittest.TestCase):
             WriteMultipleCoilsRequest(1, [True]*5) : '\x00\x01\x00\x05\x01\x1f',
             WriteMultipleCoilsResponse(1, 5)       : '\x00\x01\x00\x05',
         }
-        for request, expected in messages.iteritems():
+        for request, expected in messages.items():
             self.assertEqual(request.encode(), expected)
 
     def testWriteMultipleCoilsRequest(self):
@@ -54,11 +54,11 @@ class ModbusBitMessageTests(unittest.TestCase):
 
     def testInvalidWriteMultipleCoilsRequest(self):
         request = WriteMultipleCoilsRequest(1, None)
-        self.assertEquals(request.values, [])
+        self.assertEqual(request.values, [])
 
     def testWriteSingleCoilRequestEncode(self):
         request = WriteSingleCoilRequest(1, False)
-        self.assertEquals(request.encode(), '\x00\x01\x00\x00')
+        self.assertEqual(request.encode(), '\x00\x01\x00\x00')
 
     def testWriteSingleCoilExecute(self):
         context = MockContext(False, default=True)

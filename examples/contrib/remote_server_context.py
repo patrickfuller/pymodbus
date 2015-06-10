@@ -157,7 +157,7 @@ class RemoteServerContext(object):
         :returns: An iterator over the slave contexts
         '''
         # note, this may not include all slaves
-        return self.__slaves.iteritems()
+        return iter(self.__slaves.items())
 
     def __contains__(self, slave):
         ''' Check if the given slave is in this list

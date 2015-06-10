@@ -249,8 +249,8 @@ def main():
         try:
             log.setLevel(logging.DEBUG)
     	    logging.basicConfig()
-        except Exception, ex:
-    	    print "Logging is not supported on this system"
+        except Exception as ex:
+    	    print("Logging is not supported on this system")
 
     # split the query into a starting and ending range
     query = [int(p) for p in options.query.split(':')]
@@ -269,8 +269,8 @@ def main():
         log.debug("Starting the client")
         reactor.run()
         log.debug("Finished scraping the client")
-    except Exception, ex:
-        print ex
+    except Exception as ex:
+        print(ex)
 
 #---------------------------------------------------------------------------#
 # Main jumper

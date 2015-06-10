@@ -126,7 +126,7 @@ class BaseModbusDataBlock(object):
         :returns: An iterator of the data block data
         '''
         if isinstance(self.values, dict):
-            return self.values.iteritems()
+            return iter(self.values.items())
         return enumerate(self.values, self.address)
 
 
@@ -204,8 +204,8 @@ class ModbusSparseDataBlock(BaseModbusDataBlock):
             self.values = dict(enumerate(values))
         else: raise ParameterException(
             "Values for datastore must be a list or dictionary")
-        self.default_value = self.values.itervalues().next().__class__()
-        self.address = self.values.iterkeys().next()
+        self.default_value = iter(self.values.values()).next().__class__()
+        self.address = next(iter(self.values.keys()))
 
     @classmethod
     def create(klass):
@@ -225,7 +225,7 @@ class ModbusSparseDataBlock(BaseModbusDataBlock):
         '''
         if count == 0: return False
         handle = set(range(address, address + count))
-        return handle.issubset(set(self.values.iterkeys()))
+        return handle.issubset(set(self.values.keys()))
 
     def getValues(self, address, count=1):
         ''' Returns the requested values of the datastore
@@ -243,7 +243,7 @@ class ModbusSparseDataBlock(BaseModbusDataBlock):
         :param values: The new values to be set
         '''
         if isinstance(values, dict):
-            for idx, val in values.iteritems():
+            for idx, val in values.items():
                 self.values[idx] = val
         else:
             if not isinstance(values, list):

@@ -37,8 +37,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Pymodbus'
-copyright = u'2009, Galen Collins'
+project = 'Pymodbus'
+copyright = '2009, Galen Collins'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -176,8 +176,8 @@ htmlhelp_basename = 'Pymodbus'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Pymodbus.tex', ur'Pymodbus Documentation',
-   ur'Galen Collins', 'manual'),
+  ('index', 'Pymodbus.tex', r'Pymodbus Documentation',
+   r'Galen Collins', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

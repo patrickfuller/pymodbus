@@ -206,4 +206,4 @@ if __name__ == "__main__":
     wthreads = [threading.Thread(target=write) for i in range(2)]
     for t in rthreads + wthreads: t.start()
     for t in rthreads + wthreads: t.join()
-    print "readers[%d] writers[%d]" % (readers.counter, writers.counter) 
+    print("readers[%d] writers[%d]" % (readers.counter, writers.counter)) 

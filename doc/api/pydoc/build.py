@@ -8,7 +8,7 @@ Author: Mike Fletcher
 import logging
 import pydoc, inspect, os, string, shutil
 import sys, imp, os, stat, re, types, inspect
-from repr import Repr
+from reprlib import Repr
 from string import expandtabs, find, join, lower, split, strip, rfind, rstrip
 
 _log = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def classify_class_attrs(cls):
 		else:
 			try:
 				obj = getattr(cls, name)
-			except AttributeError, err:
+			except AttributeError as err:
 				continue
 
 		# Figure out where it was defined.
@@ -137,7 +137,7 @@ class DefaultFormatter(pydoc.HTMLDoc):
 				module = sys.modules.get(modname)
 				if modname != name and module and hasattr(module, key):
 					if getattr(module, key) is base:
-						if not cdict.has_key(key):
+						if key not in cdict:
 							cdict[key] = cdict[base] = modname + '.html#' + key
 		funcs, fdict = [], {}
 		for key, value in inspect.getmembers(object, inspect.isroutine):
@@ -182,7 +182,7 @@ class DefaultFormatter(pydoc.HTMLDoc):
 
 		
 		if classes:
-			classlist = map(lambda (key, value): value, classes)
+			classlist = [key_value[1] for key_value in classes]
 			contents = [
 				self.formattree(inspect.getclasstree(classlist, 1), name)]
 			for key, value in classes:
@@ -200,7 +200,7 @@ class DefaultFormatter(pydoc.HTMLDoc):
 			for key, value in data:
 				try:
 					contents.append(self.document(value, key))
-				except Exception, err:
+				except Exception as err:
 					pass
 			result = result + self.bigsection(
 				'Data', '#ffffff', '#55aa55', join(contents, '<br>\n'))
@@ -327,7 +327,7 @@ class PackageDocumentationGenerator:
 		for exclusion in exclusions:
 			try:
 				self.exclusions[ exclusion ]= pydoc.locate ( exclusion)
-			except pydoc.ErrorDuringImport, value:
+			except pydoc.ErrorDuringImport as value:
 				self.warn( """Unable to import the module %s which was specified as an exclusion module"""% (repr(exclusion)))
 		self.formatter = formatter or DefaultFormatter()
 		for base in baseModules:
@@ -344,7 +344,7 @@ class PackageDocumentationGenerator:
 		try:
 			self.baseSpecifiers [specifier] = pydoc.locate ( specifier)
 			self.pending.append (specifier)
-		except pydoc.ErrorDuringImport, value:
+		except pydoc.ErrorDuringImport as value:
 			self.warn( """Unable to import the module %s which was specified as a base module"""% (repr(specifier)))
 	def addInteresting( self, specifier):
 		"""Add a module to the list of interesting modules"""
@@ -380,20 +380,20 @@ class PackageDocumentationGenerator:
 		try:
 			while self.pending:
 				try:
-					if self.completed.has_key( self.pending[0] ):
+					if self.pending[0] in self.completed:
 						raise AlreadyDone( self.pending[0] )
 					self.info( """Start %s"""% (repr(self.pending[0])))
 					object = pydoc.locate ( self.pending[0] )
 					self.info( """   ... found %s"""% (repr(object.__name__)))
 				except AlreadyDone:
 					pass
-				except pydoc.ErrorDuringImport, value:
+				except pydoc.ErrorDuringImport as value:
 					self.info( """   ... FAILED %s"""% (repr( value)))
 					self.warn( """Unable to import the module %s"""% (repr(self.pending[0])))
-				except (SystemError, SystemExit), value:
+				except (SystemError, SystemExit) as value:
 					self.info( """   ... FAILED %s"""% (repr( value)))
 					self.warn( """Unable to import the module %s"""% (repr(self.pending[0])))
-				except Exception, value:
+				except Exception as value:
 					self.info( """   ... FAILED %s"""% (repr( value)))
 					self.warn( """Unable to import the module %s"""% (repr(self.pending[0])))
 				else:
@@ -425,7 +425,7 @@ class PackageDocumentationGenerator:
 		those items in the key, value pairs where the object is
 		imported from one of the excluded modules"""
 		for key, value in objectList[:]:
-			for excludeObject in self.exclusions.values():
+			for excludeObject in list(self.exclusions.values()):
 				if hasattr( excludeObject, key ) and excludeObject is not object:
 					if (
 						getattr( excludeObject, key) is value or
@@ -447,7 +447,7 @@ if __name__ == "__main__":
     if not os.path.exists("./html"):
         os.mkdir("./html")
 
-    print "Building Pydoc API Documentation"
+    print("Building Pydoc API Documentation")
     PackageDocumentationGenerator(
         baseModules = ['pymodbus', '__builtin__'],
         destinationDirectory = "./html/",

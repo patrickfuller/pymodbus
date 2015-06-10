@@ -49,7 +49,7 @@ populated slave contexts that can be run behing a modbus server::
 import csv
 import json
 from collections import defaultdict
-from StringIO import StringIO
+from io import StringIO
 from tokenize import generate_tokens
 from pymodbus.payload import BinaryPayloadDecoder
 from pymodbus.datastore.store import ModbusSparseDataBlock
@@ -83,9 +83,9 @@ def csv_mapping_parser(path, template):
     mapping_blocks = defaultdict(dict)
     with open(path, 'r') as handle:
         reader = csv.reader(handle)
-        reader.next() # skip the csv header
+        next(reader) # skip the csv header
         for row in reader:
-            mapping = dict(zip(template, row))
+            mapping = dict(list(zip(template, row)))
             fid = mapping.pop('function')
             aid = int(mapping['address'])
             mapping_blocks[aid] = mapping
@@ -116,10 +116,10 @@ def json_mapping_parser(path, template):
     '''
     mapping_blocks = {}
     with open(path, 'r') as handle:
-        for tid, rows in json.load(handle).iteritems():
+        for tid, rows in json.load(handle).items():
             mappings = {}
-            for key, values in rows.iteritems():
-                mapping = {template.get(k, k) : v for k, v in values.iteritems()}
+            for key, values in rows.items():
+                mapping = {template.get(k, k) : v for k, v in values.items()}
                 mappings[int(key)] = mapping
             mapping_blocks[tid] = mappings
     return mapping_blocks
@@ -158,8 +158,8 @@ def modbus_context_decoder(mapping_blocks):
     :returns: The initialized modbus slave context
     '''
     blocks = defaultdict(dict)
-    for block in mapping_blocks.itervalues():
-        for mapping in block.itervalues():
+    for block in mapping_blocks.values():
+        for mapping in block.values():
             value    = int(mapping['value'])
             address  = int(mapping['address'])
             function = mapping['function']
@@ -216,8 +216,8 @@ class ModbusTypeDecoder(object):
     # Type parsers
     #------------------------------------------------------------
     def parse_string(self, tokens):
-        _ = tokens.next()
-        size = int(tokens.next())
+        _ = next(tokens)
+        size = int(next(tokens))
         return lambda d: d.decode_string(size=size)
 
     def parse_bits(self, tokens):
@@ -288,8 +288,8 @@ def mapping_decoder(mapping_blocks, decoder=None):
     :param decoder: The type decoder to use
     '''
     decoder = decoder or ModbusTypeDecoder()
-    for block in mapping_blocks.itervalues():
-        for mapping in block.itervalues():
+    for block in mapping_blocks.values():
+        for mapping in block.values():
             mapping['address'] = int(mapping['address'])
             mapping['size']    = int(mapping['size'])
             mapping['type']    = decoder.parse(mapping['type'])

@@ -8,6 +8,7 @@ from twisted.internet.defer import Deferred
 # Logging
 #---------------------------------------------------------------------------#
 import logging
+import collections
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
 logging.basicConfig()
@@ -130,8 +131,8 @@ class SunspecModel(object):
         :param code: The device code to lookup
         :returns: The device model name, or None if none available
         '''
-        values = dict((v, k) for k, v in klass.__dict__.iteritems()
-            if not callable(v))
+        values = dict((v, k) for k, v in klass.__dict__.items()
+            if not isinstance(v, collections.Callable))
         return values.get(code, None)
 
 
@@ -299,15 +300,15 @@ if __name__ == "__main__":
 
     # print out all the device common block
     common = client.get_common_block()
-    for key, value in common.iteritems():
+    for key, value in common.items():
         if key == "SunSpec_DID":
             value = SunspecModel.lookup(value)
-        print "{:<20}: {}".format(key, value)
+        print("{:<20}: {}".format(key, value))
 
     # print out all the available device blocks
     blocks = client.get_all_device_blocks()
     for block in blocks:
-        print block
+        print(block)
 
     client.client.close()
 
